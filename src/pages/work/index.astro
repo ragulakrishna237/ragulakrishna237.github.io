@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import {
+  person,
+  pages,
+  projects,
+  graphJsonLd,
+  softwareSourceCodeJsonLd,
+  projectHref,
+  siteUrl,
+} from '../../data/site';
+
+const meta = pages[1];
+const title = `${person.name} — Work`;
+---
+
+<Layout
+  title={title}
+  description={meta.description}
+  jsonLd={graphJsonLd(`${siteUrl}/work/`, title, projects.map(softwareSourceCodeJsonLd))}
+>
+  <article>
+    <header class="enter">
+      <h1>Work</h1>
+      <p class="lede">{meta.description}</p>
+    </header>
+
+    <section class="enter">
+      <h2>My public repositories</h2>
+      <div class="cards">
+        {projects.map((project) => (
+          <a class="card press" href={projectHref(project)}>
+            <h3>{project.name}</h3>
+            <p>{project.scope}</p>
+            <p>{project.detail}</p>
+            <span class="card-meta">Read the write-up</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </article>
+</Layout>

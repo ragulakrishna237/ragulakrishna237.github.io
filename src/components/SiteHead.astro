@@ -1,0 +1,38 @@
+---
+import { person, siteUrl, sameAs, headline } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, jsonLd } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? siteUrl).href;
+const image = new URL('/profile.jpg', Astro.site ?? siteUrl).href;
+const llms = new URL('/llms.txt', Astro.site ?? siteUrl).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="author" content={person.name} />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" type="text/plain" title="LLM profile" href={llms} />
+{sameAs().map((href) => <link rel="me" href={href} />)}
+<meta property="og:type" content="profile" />
+<meta property="og:site_name" content={person.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={image} />
+<meta property="og:image:alt" content={headline} />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<meta name="generator" content={Astro.generator} />
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

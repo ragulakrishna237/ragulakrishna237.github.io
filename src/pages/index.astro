@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {
+  person,
+  headline,
+  summary,
+  seeking,
+  knowsAbout,
+  projects,
+  faqs,
+  identityLinks,
+  graphJsonLd,
+  faqJsonLd,
+  projectHref,
+  siteUrl,
+} from '../data/site';
+
+const featured = projects.filter((project) => project.featured);
+const title = `${person.name} — ${person.jobTitle}`;
+---
+
+<Layout title={title} description={headline} jsonLd={graphJsonLd(`${siteUrl}/`, title, [faqJsonLd()])}>
+  <article>
+    <header class="enter">
+      <div class="profile">
+        <img class="avatar" src="/profile.jpg" width="72" height="72" alt="My portrait" />
+        <div>
+          <h1>{person.name}</h1>
+          <p class="lede">{headline}</p>
+          <ul class="identity">
+            {identityLinks().map((link) => (
+              <li>
+                <a href={link.href} rel={link.rel} target={link.href.startsWith('http') ? '_blank' : undefined}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <div class="stack">
+      <section class="enter">
+        <h2>Profile</h2>
+        <p>{summary}</p>
+      </section>
+
+      <section class="enter">
+        <h2>Roles I want</h2>
+        <ul class="list">
+          {seeking.map((role) => <li>{role}</li>)}
+        </ul>
+      </section>
+
+      <section class="enter">
+        <h2>Selected work</h2>
+        <div class="cards">
+          {featured.map((project) => (
+            <a class="card press" href={projectHref(project)}>
+              <h3>{project.name}</h3>
+              <p>{project.scope}</p>
+              <span class="card-meta">Read the write-up</span>
+            </a>
+          ))}
+        </div>
+        <p><a href="/work/">All of my public work</a></p>
+      </section>
+
+      <section>
+        <h2>What I work with</h2>
+        <ul class="chips">
+          {knowsAbout.map((topic) => <li>{topic}</li>)}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Questions I get asked</h2>
+        <dl class="faq">
+          {faqs.map((faq) => (
+            <>
+              <dt>{faq.question}</dt>
+              <dd>{faq.answer}</dd>
+            </>
+          ))}
+        </dl>
+      </section>
+    </div>
+  </article>
+</Layout>

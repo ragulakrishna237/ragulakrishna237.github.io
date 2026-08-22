@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import {
+  person,
+  projects,
+  graphJsonLd,
+  softwareSourceCodeJsonLd,
+  siteUrl,
+} from '../../data/site';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const pageUrl = `${siteUrl}/work/${project.slug}/`;
+const title = `${project.name} — ${person.name}`;
+---
+
+<Layout
+  title={title}
+  description={project.scope}
+  jsonLd={graphJsonLd(pageUrl, title, [softwareSourceCodeJsonLd(project)])}
+>
+  <article>
+    <header class="enter">
+      <h1>{project.name}</h1>
+      <p class="lede">{project.scope}</p>
+    </header>
+
+    <div class="stack">
+      <section class="enter">
+        <h2>What I built</h2>
+        <p>{project.detail}</p>
+      </section>
+
+      <section class="enter">
+        <h2>Source</h2>
+        <p>
+          <a href={project.repo} rel="noopener" target="_blank">GitHub repository</a>
+        </p>
+        <p><a href="/work/">All of my public work</a></p>
+      </section>
+    </div>
+  </article>
+</Layout>
