@@ -84,6 +84,56 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    name: 'credit-risk-cecl-model',
+    slug: 'credit-risk-cecl-model',
+    scope:
+      'I built a first-principles CECL reserve: discrete-time PD hazard, competing-risk survival, EAD as a rate, and LGD from a discounted recovery curve, assembled as LGD × Σ S_T · PD_T · EAD_T.',
+    detail:
+      'I chose logistic / hazard regression over a black-box ranker so a dollar reserve stays a probability a reviewer can defend. Tests prove the survival identity, that EAD rejects a dollar vector, and that dropping prepay from survival overstates prime EL. All loan-month data are synthetic.',
+    repo: 'https://github.com/ragulakrishna237/credit-risk-cecl-model',
+    featured: false,
+  },
+  {
+    name: 'fraud-strategy-model',
+    slug: 'fraud-strategy-model',
+    scope:
+      'I built a leakage-safe fraud strategy: as-of-date features, a shallow XGBoost score, and a three-tier approve / review / decline decision that is a dollar number, not an AUC.',
+    detail:
+      'Every feature takes as_of_date so a future burst cannot move historical velocity. I split by application date, Platt-calibrate out of time, and set τ_decline by FN and FP cost. Tests cover leakage, class imbalance, monotone tiers, and a drift funnel that names a seeded broken feature.',
+    repo: 'https://github.com/ragulakrishna237/fraud-strategy-model',
+    featured: false,
+  },
+  {
+    name: 'airflow-dbt-warehouse',
+    slug: 'airflow-dbt-warehouse',
+    scope:
+      'I built an Airflow-orchestrated ELT: extract, load raw orders, then dbt run and test against a star schema I can retarget across warehouses.',
+    detail:
+      'CI proves the Postgres target. Models are written once and swapped with --target. Re-running a day is safe: the generator is a function of seed and as_of_date, and the loader upserts dimensions then deletes and inserts facts for that order_date.',
+    repo: 'https://github.com/ragulakrishna237/airflow-dbt-warehouse',
+    featured: false,
+  },
+  {
+    name: 'databricks-delta-lake',
+    slug: 'databricks-delta-lake',
+    scope:
+      'I built a local PySpark + Delta bronze / silver / gold pipeline with append, MERGE, quarantine, and VERSION AS OF time travel.',
+    detail:
+      'Bronze stays append-only. Silver dedupes on event_id and sends poison rows to quarantine instead of dropping them. Gold is daily order_count and amount_sum, not a copied warehouse star schema. Local tests run PySpark; the DLT file is workspace-only and is not claimed as executed here.',
+    repo: 'https://github.com/ragulakrishna237/databricks-delta-lake',
+    featured: false,
+  },
+  {
+    name: 'ci-cd-pipeline-demo',
+    slug: 'ci-cd-pipeline-demo',
+    scope:
+      'I built a working CI/CD path for a small FastAPI service: ruff, unit and integration tests, then a Docker image published to GHCR.',
+    detail:
+      'The app is two endpoints on purpose. CI runs on push and PR. CD re-runs tests, builds the image, and pushes ghcr.io/ragulakrishna237/ci-cd-pipeline-demo. There is no live host; GHCR is the artifact.',
+    repo: 'https://github.com/ragulakrishna237/ci-cd-pipeline-demo',
+    featured: false,
+  },
+  {
     name: 'streaming-service',
     slug: 'streaming-service',
     scope:
