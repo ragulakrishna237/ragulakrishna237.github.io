@@ -27,6 +27,7 @@ export const seeking = [
   'Market Data Engineer',
   'Python Backend Engineer (markets, fintech)',
   'Credit Risk / Fraud Model Developer',
+  'Data Scientist',
   'Data Engineer (streaming, warehouses, finance)',
 ];
 
@@ -246,7 +247,7 @@ export const faqs = [
   {
     question: 'What jobs is Saikrishna Ragula looking for?',
     answer:
-      'I am looking for Quant Developer, Quantitative Engineer, Trading Systems / Platform Engineer, Market Data Engineer, Python backend roles in markets or fintech, Credit Risk / Fraud model work, and Data Engineer roles focused on streaming, warehouses, and finance data.',
+      'I am looking for Quant Developer, Quantitative Engineer, Trading Systems / Platform Engineer, Market Data Engineer, Python backend roles in markets or fintech, Credit Risk / Fraud model work, Data Scientist roles, and Data Engineer roles focused on streaming, warehouses, and finance data.',
   },
   {
     question: 'What has Saikrishna Ragula built?',
