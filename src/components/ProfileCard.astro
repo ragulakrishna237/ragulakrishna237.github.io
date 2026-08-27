@@ -1,0 +1,32 @@
+---
+import RadixLogo from './RadixLogo.astro';
+import { person, headline, summary, identityLinks } from '../data/site';
+
+const links = identityLinks();
+---
+
+<header class="profile-card enter">
+  <div class="profile-top">
+    <img class="avatar" src="/profile.jpg" width="88" height="88" alt="My portrait" />
+    <div class="profile-copy">
+      <h1>{person.name}</h1>
+      <p class="lede">{headline}</p>
+      <ul class="identity">
+        {links.map((link) => (
+          <li>
+            <a
+              class="press"
+              href={link.href}
+              rel={link.rel}
+              target={link.href.startsWith('http') ? '_blank' : undefined}
+              aria-label={link.label}
+            >
+              <RadixLogo name={link.icon} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <p class="profile-summary">{summary}</p>
+</header>

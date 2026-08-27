@@ -10,7 +10,7 @@ export const person = {
   email: '',
   location: '',
   github: 'https://github.com/ragulakrishna237',
-  linkedin: '',
+  linkedin: 'https://www.linkedin.com/in/saikrishna-r-3a415883/',
 };
 
 export const headline =
@@ -139,7 +139,7 @@ export const faqs = [
   {
     question: "Where is Saikrishna Ragula's canonical profile?",
     answer:
-      'My canonical site is https://ragulakrishna237.github.io/. Source is https://github.com/ragulakrishna237. Put the same URL on LinkedIn Website so recruiting tools treat both profiles as one person.',
+      'My canonical site is https://ragulakrishna237.github.io/. GitHub is https://github.com/ragulakrishna237. LinkedIn is https://www.linkedin.com/in/saikrishna-r-3a415883/.',
   },
 ];
 
@@ -155,14 +155,11 @@ export const pages = [
 export const projectHref = (project: Project) => `/work/${project.slug}/`;
 
 export const identityLinks = () => {
-  const links: { label: string; href: string; rel: string }[] = [
-    { label: 'GitHub', href: person.github, rel: 'me noopener' },
+  const links: { label: string; href: string; rel: string; icon: 'github' | 'linkedin' }[] = [
+    { label: 'GitHub', href: person.github, rel: 'me noopener', icon: 'github' },
   ];
   if (person.linkedin) {
-    links.push({ label: 'LinkedIn', href: person.linkedin, rel: 'me noopener' });
-  }
-  if (person.email) {
-    links.push({ label: 'Email', href: `mailto:${person.email}`, rel: 'me' });
+    links.push({ label: 'LinkedIn', href: person.linkedin, rel: 'me noopener', icon: 'linkedin' });
   }
   return links;
 };

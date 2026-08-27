@@ -1,14 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ProfileCard from '../components/ProfileCard.astro';
 import {
   person,
   headline,
-  summary,
   seeking,
   knowsAbout,
   projects,
   faqs,
-  identityLinks,
   graphJsonLd,
   faqJsonLd,
   projectHref,
@@ -21,31 +20,9 @@ const title = `${person.name} — ${person.jobTitle}`;
 
 <Layout title={title} description={headline} jsonLd={graphJsonLd(`${siteUrl}/`, title, [faqJsonLd()])}>
   <article>
-    <header class="enter">
-      <div class="profile">
-        <img class="avatar" src="/profile.jpg" width="72" height="72" alt="My portrait" />
-        <div>
-          <h1>{person.name}</h1>
-          <p class="lede">{headline}</p>
-          <ul class="identity">
-            {identityLinks().map((link) => (
-              <li>
-                <a href={link.href} rel={link.rel} target={link.href.startsWith('http') ? '_blank' : undefined}>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </header>
+    <ProfileCard />
 
     <div class="stack">
-      <section class="enter">
-        <h2>Profile</h2>
-        <p>{summary}</p>
-      </section>
-
       <section class="enter">
         <h2>Roles I want</h2>
         <ul class="list">
