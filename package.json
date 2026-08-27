@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "sync:repos": "node scripts/sync-github-repos.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

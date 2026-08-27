@@ -1,11 +1,13 @@
+import discovered from './discovered-repos.json';
+
 export const siteUrl = 'https://ragulakrishna237.github.io';
 
 export const person = {
   name: 'Saikrishna Ragula',
   alternateName: 'ragulakrishna237',
-  jobTitle: 'Python engineer — quant systems, market data, and trading infrastructure',
+  jobTitle: 'Python engineer — trading systems, credit risk, fraud models, and data platforms',
   description:
-    'I build production-shaped trading systems: strategy runtimes, market-data services, order management, and the data paths that connect them.',
+    'I build production-shaped Python systems: strategy runtimes, market-data and order services, CECL and fraud decisioning, ELT warehouses, Delta Lake pipelines, and streaming data paths.',
   image: `${siteUrl}/profile.jpg`,
   email: '',
   location: '',
@@ -14,29 +16,38 @@ export const person = {
 };
 
 export const headline =
-  'I build trading infrastructure: strategy runtimes, market data, and order systems.';
+  'I build trading infrastructure, credit and fraud models, and data platforms in Python.';
 
 export const summary =
-  'I design Python systems where researchers write strategy logic and the platform owns lifecycle, market data, execution, risk, sandboxing, and telemetry. My public work is a three-repo trading stack: a strategy IoC container, a FastAPI market-data vendor, and an order-management service with kill switches and audit trails.';
+  'I design Python systems where researchers write strategy logic and the platform owns lifecycle, market data, execution, risk, sandboxing, and telemetry. My public trading stack is a strategy IoC container, a FastAPI market-data vendor, and an order-management service with kill switches and audit trails. Around that stack I built a first-principles CECL reserve, a leakage-safe fraud strategy with dollar decisioning, Airflow and dbt ELT, a local PySpark Delta Lake, a Kafka streaming path, storage-engine labs, an Apollo research client, and a FastAPI CI/CD image published to GHCR.';
 
 export const seeking = [
   'Quant Developer / Quantitative Engineer',
   'Trading Systems / Platform Engineer',
   'Market Data Engineer',
   'Python Backend Engineer (markets, fintech)',
-  'Data Engineer (streaming, finance)',
+  'Credit Risk / Fraud Model Developer',
+  'Data Engineer (streaming, warehouses, finance)',
 ];
 
 export const knowsAbout = [
   'Python',
   'Quantitative trading systems',
   'Market data',
+  'CECL / expected credit loss',
+  'Fraud decisioning',
   'FastAPI',
   'WebSockets',
   'Apache Kafka',
   'PostgreSQL',
+  'Apache Airflow',
+  'dbt',
+  'Delta Lake',
+  'PySpark',
+  'XGBoost',
   'Docker',
   'Prometheus',
+  'GitHub Actions',
   'Inversion of Control',
   'Risk controls',
   'Order management',
@@ -52,7 +63,66 @@ export type Project = {
   featured: boolean;
 };
 
-export const projects: Project[] = [
+type DiscoveredRepo = {
+  name: string;
+  html_url: string;
+  description: string;
+  language: string | null;
+};
+
+function slugFromName(name: string) {
+  return (
+    name
+      .replace(/_/g, '-')
+      .replace(/[^a-zA-Z0-9-]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .toLowerCase() || 'repo'
+  );
+}
+
+function catalogKeys(project: Project) {
+  const repoName = project.repo.split('/').filter(Boolean).pop() ?? '';
+  return [
+    project.name.toLowerCase(),
+    project.slug.toLowerCase(),
+    repoName.toLowerCase(),
+    repoName.replace(/-+$/g, '').toLowerCase(),
+  ];
+}
+
+function mergeProjects(handwritten: Project[], extra: DiscoveredRepo[]): Project[] {
+  const keys = new Set(handwritten.flatMap(catalogKeys));
+  const appended: Project[] = [];
+  for (const repo of extra) {
+    const slug = slugFromName(repo.name);
+    const aliases = [
+      repo.name.toLowerCase(),
+      slug,
+      repo.name.replace(/-+$/g, '').toLowerCase(),
+    ];
+    if (aliases.some((alias) => keys.has(alias))) continue;
+    const description = repo.description.trim();
+    const scope = description
+      ? /^I\b/i.test(description)
+        ? description
+        : `I built ${repo.name}: ${description}`
+      : `I published ${repo.name} as a public repository.`;
+    appended.push({
+      name: repo.name,
+      slug,
+      scope,
+      detail:
+        'GitHub listed this repo after I last edited this site. I have not written a longer first-person note for it yet.',
+      repo: repo.html_url,
+      featured: false,
+    });
+    for (const alias of aliases) keys.add(alias);
+  }
+  return [...handwritten, ...appended];
+}
+
+const catalog: Project[] = [
   {
     name: 'quant_platform',
     slug: 'quant-platform',
@@ -91,7 +161,7 @@ export const projects: Project[] = [
     detail:
       'I chose logistic / hazard regression over a black-box ranker so a dollar reserve stays a probability a reviewer can defend. Tests prove the survival identity, that EAD rejects a dollar vector, and that dropping prepay from survival overstates prime EL. All loan-month data are synthetic.',
     repo: 'https://github.com/ragulakrishna237/credit-risk-cecl-model',
-    featured: false,
+    featured: true,
   },
   {
     name: 'fraud-strategy-model',
@@ -101,7 +171,7 @@ export const projects: Project[] = [
     detail:
       'Every feature takes as_of_date so a future burst cannot move historical velocity. I split by application date, Platt-calibrate out of time, and set τ_decline by FN and FP cost. Tests cover leakage, class imbalance, monotone tiers, and a drift funnel that names a seeded broken feature.',
     repo: 'https://github.com/ragulakrishna237/fraud-strategy-model',
-    featured: false,
+    featured: true,
   },
   {
     name: 'airflow-dbt-warehouse',
@@ -165,26 +235,28 @@ export const projects: Project[] = [
   },
 ];
 
+export const projects: Project[] = mergeProjects(catalog, discovered.repos ?? []);
+
 export const faqs = [
   {
     question: 'Who is Saikrishna Ragula?',
     answer:
-      'I am Saikrishna Ragula, a Python engineer. I build trading infrastructure: strategy runtimes, market-data services, and order-management systems. Researchers write strategy logic; my platform owns lifecycle, execution, risk, sandboxing, and telemetry.',
+      'I am Saikrishna Ragula, a Python engineer. I build trading infrastructure — strategy runtimes, market-data services, and order-management systems — and I also ship credit-risk, fraud, warehouse, Delta Lake, and streaming work in public repos. Researchers write strategy logic; my platform owns lifecycle, execution, risk, sandboxing, and telemetry.',
   },
   {
     question: 'What jobs is Saikrishna Ragula looking for?',
     answer:
-      'I am looking for Quant Developer, Quantitative Engineer, Trading Systems / Platform Engineer, Market Data Engineer, Python backend roles in markets or fintech, and Data Engineer roles focused on streaming finance data.',
+      'I am looking for Quant Developer, Quantitative Engineer, Trading Systems / Platform Engineer, Market Data Engineer, Python backend roles in markets or fintech, Credit Risk / Fraud model work, and Data Engineer roles focused on streaming, warehouses, and finance data.',
   },
   {
-    question: 'What trading systems has Saikrishna Ragula built?',
+    question: 'What has Saikrishna Ragula built?',
     answer:
-      'I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an order-management service with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket vendor with sequenced ticks, snapshots, replay, and Prometheus metrics.',
+      'I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor. I also built credit-risk-cecl-model as a first-principles CECL reserve, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, streaming-service as a Kafka producer/consumer path, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
   },
   {
     question: 'What stack does Saikrishna Ragula use?',
     answer:
-      'I work in Python with FastAPI, WebSockets, Apache Kafka, PostgreSQL, Docker, and Prometheus. I design inversion-of-control runtimes, order-state machines, risk controls, and telemetry for systematic trading systems.',
+      'I work in Python with FastAPI, WebSockets, Apache Kafka, PostgreSQL, Docker, Prometheus, Apache Airflow, dbt, PySpark, Delta Lake, and XGBoost. I design inversion-of-control runtimes, order-state machines, CECL identities, leakage-safe features, risk controls, telemetry, and CI/CD that publishes images to GHCR.',
   },
   {
     question: "Where is Saikrishna Ragula's canonical profile?",
@@ -198,7 +270,8 @@ export const pages = [
   {
     path: '/work/',
     label: 'Work',
-    description: 'My public work in trading systems, market data, and Python infrastructure.',
+    description:
+      'My public work in trading systems, credit and fraud models, warehouses, streaming, and Python infrastructure.',
   },
 ] as const;
 

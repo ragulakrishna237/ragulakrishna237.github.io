@@ -12,7 +12,8 @@ Maintain this personal portfolio. Public copy is first person.
 
 - Astro at the repository root. `output: 'static'`.
 - GitHub Pages for `https://ragulakrishna237.github.io/`.
-- One source of truth: `src/data/site.ts`.
+- One source of truth for identity and handwritten work: `src/data/site.ts`.
+- CI fetches public GitHub repos at build time (`scripts/sync-github-repos.mjs`) and appends unknown non-fork repos. Handwritten catalog wins. Featured flags stay in `site.ts`. The live site stays static HTML.
 - Layouts only share document shell: metadata, nav, footer.
 
 ## Content

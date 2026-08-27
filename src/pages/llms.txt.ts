@@ -16,12 +16,15 @@ export const prerender = true;
 
 export const GET: APIRoute = ({ site }) => {
   const origin = site ?? new URL(siteUrl);
-  const work = projects
-    .map(
-      (project) =>
-        `- ${project.name}: ${project.scope} ${new URL(projectHref(project), origin).href} ${project.repo}`,
-    )
-    .join('\n');
+  const listProjects = (list: typeof projects) =>
+    list
+      .map(
+        (project) =>
+          `- ${project.name}: ${project.scope} ${new URL(projectHref(project), origin).href} ${project.repo}`,
+      )
+      .join('\n');
+  const selected = listProjects(projects.filter((project) => project.featured));
+  const rest = listProjects(projects.filter((project) => !project.featured));
   const questions = faqs
     .map((faq) => `### ${faq.question}\n\n${faq.answer}`)
     .join('\n\n');
@@ -52,7 +55,11 @@ ${roles}
 
 ## Selected work
 
-${work}
+${selected}
+
+## Other public work
+
+${rest}
 
 ## What I work with
 
