@@ -14,6 +14,13 @@ const SKIP = new Set([
   'test_project_repo',
   'quant-concepts',
   'data-engineering-projects',
+  'quant_platform',
+  'trading-platform',
+  'market-data-service',
+  'streaming-service-',
+  'streaming-service',
+  'storage-engine',
+  'apollo-data-project',
 ]);
 
 const outPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'discovered-repos.json');
