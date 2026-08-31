@@ -5,9 +5,9 @@ export const siteUrl = 'https://ragulakrishna237.github.io';
 export const person = {
   name: 'Saikrishna Ragula',
   alternateName: 'ragulakrishna237',
-  jobTitle: 'Data scientist — credit risk, fraud strategy, and data platforms',
+  jobTitle: 'Python engineer — trading systems, credit risk, fraud models, and data platforms',
   description:
-    'I build production-shaped Python systems: first-principles CECL reserves, leakage-safe fraud decisioning, ELT warehouses, and Delta Lake pipelines.',
+    'I build production-shaped Python systems: strategy runtimes, market-data and order services, CECL and fraud decisioning, ELT warehouses, Delta Lake pipelines, and streaming data paths.',
   image: `${siteUrl}/profile.jpg`,
   email: '',
   location: '',
@@ -16,33 +16,43 @@ export const person = {
 };
 
 export const headline =
-  'I build credit-risk and fraud models, and the data platforms that feed them.';
+  'I build trading infrastructure, credit and fraud models, and data platforms in Python.';
 
 export const summary =
-  'I design Python models where a dollar number stays a probability a reviewer can defend. My public work is a first-principles CECL reserve and a leakage-safe fraud strategy with three-tier dollar decisioning. I also built Airflow and dbt ELT, a local PySpark Delta Lake, and a FastAPI CI/CD image published to GHCR.';
+  'I design Python systems where researchers write strategy logic and the platform owns lifecycle, market data, execution, risk, sandboxing, and telemetry. My public trading stack is a strategy IoC container, a FastAPI market-data vendor, and an order-management service with kill switches and audit trails. Around that stack I built a first-principles CECL reserve, a leakage-safe fraud strategy with dollar decisioning, Airflow and dbt ELT, a local PySpark Delta Lake, a Kafka streaming path, storage-engine labs, an Apollo research client, and a FastAPI CI/CD image published to GHCR.';
 
 export const seeking = [
-  'Data Scientist',
-  'Credit Risk / Fraud Model Developer',
   'Quant Developer / Quantitative Engineer',
-  'Python Backend Engineer (fintech, credit risk)',
-  'Data Engineer (warehouses, finance)',
+  'Trading Systems / Platform Engineer',
+  'Market Data Engineer',
+  'Python Backend Engineer (markets, fintech)',
+  'Credit Risk / Fraud Model Developer',
+  'Data Scientist',
+  'Data Engineer (streaming, warehouses, finance)',
 ];
 
 export const knowsAbout = [
   'Python',
+  'Quantitative trading systems',
+  'Market data',
   'CECL / expected credit loss',
   'Fraud decisioning',
-  'Survival models',
-  'XGBoost',
+  'FastAPI',
+  'WebSockets',
+  'Apache Kafka',
+  'PostgreSQL',
   'Apache Airflow',
   'dbt',
   'Delta Lake',
   'PySpark',
-  'PostgreSQL',
-  'FastAPI',
+  'XGBoost',
   'Docker',
+  'Prometheus',
   'GitHub Actions',
+  'Inversion of Control',
+  'Risk controls',
+  'Order management',
+  'Telemetry',
 ];
 
 export type Project = {
@@ -52,7 +62,6 @@ export type Project = {
   detail: string;
   repo: string;
   featured: boolean;
-  hidden?: boolean;
 };
 
 type DiscoveredRepo = {
@@ -123,8 +132,7 @@ const catalog: Project[] = [
     detail:
       'I used Inversion of Control for systematic trading. The strategy interface covers on_start, on_market_data, on_timer, and on_fill. My runtime loads strategies, isolates failures so one bad strategy cannot kill the container, and keeps platform code behind a stable quant_api boundary.',
     repo: 'https://github.com/ragulakrishna237/quant_platform',
-    featured: false,
-    hidden: true,
+    featured: true,
   },
   {
     name: 'trading-platform',
@@ -134,8 +142,7 @@ const catalog: Project[] = [
     detail:
       'I designed this as the firm OMS, not a strategy host. The order FSM runs NEW → PENDING_RISK → PENDING_FILL → FILLED, with reject and cancel paths. My market-data client handles startup backoff, mid-stream reconnects, sequence-gap detection, and stale-data flags for risk layers.',
     repo: 'https://github.com/ragulakrishna237/trading-platform',
-    featured: false,
-    hidden: true,
+    featured: true,
   },
   {
     name: 'market-data-service',
@@ -145,8 +152,7 @@ const catalog: Project[] = [
     detail:
       'I kept it stateless so I can kill and restart it freely. It emits ticks with seq and ts_event, heartbeats when idle, snapshots by symbol, and replay from a per-symbol ring buffer. This is the external feed the rest of my stack does not control.',
     repo: 'https://github.com/ragulakrishna237/market-data-service',
-    featured: false,
-    hidden: true,
+    featured: true,
   },
   {
     name: 'credit-risk-cecl-model',
@@ -207,7 +213,6 @@ const catalog: Project[] = [
       'I persist scraped source data, then stream it to a Kafka topic. Separate producer, consumer, and visualization processes make the pipeline inspectable — the same production-grade parameters (broker isolation, topic boundaries, consumer lag) I use in market-data ingestion.',
     repo: 'https://github.com/ragulakrishna237/streaming-service-',
     featured: false,
-    hidden: true,
   },
   {
     name: 'storage-engine',
@@ -218,7 +223,6 @@ const catalog: Project[] = [
       'I run Docker Compose Postgres with schema samples, CRUD, and join patterns. I want to know when a relational engine is the right default versus a document, key-value, or wide-column store in a trading stack.',
     repo: 'https://github.com/ragulakrishna237/storage-engine',
     featured: false,
-    hidden: true,
   },
   {
     name: 'apollo-data-project',
@@ -229,34 +233,31 @@ const catalog: Project[] = [
       'I run authenticated search across Northeast US finance keywords. I sort and bucket the output so firm lists stay usable for research rather than a raw dump.',
     repo: 'https://github.com/ragulakrishna237/apollo-data-project',
     featured: false,
-    hidden: true,
   },
 ];
 
-export const projects: Project[] = mergeProjects(catalog, discovered.repos ?? []).filter(
-  (project) => !project.hidden,
-);
+export const projects: Project[] = mergeProjects(catalog, discovered.repos ?? []);
 
 export const faqs = [
   {
     question: 'Who is Saikrishna Ragula?',
     answer:
-      'I am Saikrishna Ragula, a data scientist and Python engineer. I build credit-risk and fraud models: a first-principles CECL reserve and a leakage-safe fraud strategy whose decision is a dollar number. I also ship warehouse, Delta Lake, and CI/CD work in public repos.',
+      'I am Saikrishna Ragula, a Python engineer. I build trading infrastructure — strategy runtimes, market-data services, and order-management systems — and I also ship credit-risk, fraud, warehouse, Delta Lake, and streaming work in public repos. Researchers write strategy logic; my platform owns lifecycle, execution, risk, sandboxing, and telemetry.',
   },
   {
     question: 'What jobs is Saikrishna Ragula looking for?',
     answer:
-      'I am looking for Data Scientist roles, Credit Risk / Fraud model work, Quant Developer / Quantitative Engineer roles, Python backend roles in fintech or credit risk, and Data Engineer roles focused on warehouses and finance data.',
+      'I am looking for Quant Developer, Quantitative Engineer, Trading Systems / Platform Engineer, Market Data Engineer, Python backend roles in markets or fintech, Credit Risk / Fraud model work, Data Scientist roles, and Data Engineer roles focused on streaming, warehouses, and finance data.',
   },
   {
     question: 'What has Saikrishna Ragula built?',
     answer:
-      'I built credit-risk-cecl-model as a first-principles CECL reserve (LGD × Σ S_T · PD_T · EAD_T) and fraud-strategy-model as leakage-safe dollar decisioning. I also built airflow-dbt-warehouse as retargetable ELT, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
+      'I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor. I also built credit-risk-cecl-model as a first-principles CECL reserve, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, streaming-service as a Kafka producer/consumer path, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
   },
   {
     question: 'What stack does Saikrishna Ragula use?',
     answer:
-      'I work in Python with logistic / hazard models, XGBoost, Apache Airflow, dbt, PySpark, Delta Lake, PostgreSQL, FastAPI, Docker, and GitHub Actions. I design CECL identities, leakage-safe features, and CI/CD that publishes images to GHCR.',
+      'I work in Python with FastAPI, WebSockets, Apache Kafka, PostgreSQL, Docker, Prometheus, Apache Airflow, dbt, PySpark, Delta Lake, and XGBoost. I design inversion-of-control runtimes, order-state machines, CECL identities, leakage-safe features, risk controls, telemetry, and CI/CD that publishes images to GHCR.',
   },
   {
     question: "Where is Saikrishna Ragula's canonical profile?",
@@ -271,7 +272,7 @@ export const pages = [
     path: '/work/',
     label: 'Work',
     description:
-      'My public work in credit-risk models, fraud strategy, warehouses, and Python data platforms.',
+      'My public work in trading systems, credit and fraud models, warehouses, streaming, and Python infrastructure.',
   },
 ] as const;
 
