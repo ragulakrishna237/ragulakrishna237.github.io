@@ -47,6 +47,7 @@ jobs:
           test -f dist/work/index.html
           test -f dist/llms.txt
           test -f dist/sitemap.xml
+          test -f dist/cecl/index.html
           grep -q "Saikrishna Ragula" dist/index.html
 
       - name: Configure GitHub Pages

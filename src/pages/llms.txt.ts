@@ -20,7 +20,9 @@ export const GET: APIRoute = ({ site }) => {
     list
       .map(
         (project) =>
-          `- ${project.name}: ${project.scope} ${new URL(projectHref(project), origin).href} ${project.repo}`,
+          `- ${project.name}: ${project.scope} ${new URL(projectHref(project), origin).href} ${project.repo}${
+            project.walkthrough ? ` ${new URL(project.walkthrough, origin).href}` : ''
+          }`,
       )
       .join('\n');
   const selected = listProjects(projects.filter((project) => project.featured));

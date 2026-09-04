@@ -17,7 +17,13 @@ const escapeXml = (value: string) =>
 
 export const GET: APIRoute = ({ site }) => {
   const origin = site ?? new URL(siteUrl);
-  const paths = ['/', '/work/', '/llms.txt', ...projects.map(projectHref)];
+  const paths = [
+    '/',
+    '/work/',
+    '/llms.txt',
+    ...projects.map(projectHref),
+    ...projects.flatMap((project) => (project.walkthrough ? [project.walkthrough] : [])),
+  ];
   const urls = paths
     .map(
       (path) => `  <url>

@@ -62,6 +62,7 @@ export type Project = {
   detail: string;
   repo: string;
   featured: boolean;
+  walkthrough?: string;
 };
 
 type DiscoveredRepo = {
@@ -163,6 +164,7 @@ const catalog: Project[] = [
       'I chose logistic / hazard regression over a black-box ranker so a dollar reserve stays a probability a reviewer can defend. Tests prove the survival identity, that EAD rejects a dollar vector, and that dropping prepay from survival overstates prime EL. All loan-month data are synthetic.',
     repo: 'https://github.com/ragulakrishna237/credit-risk-cecl-model',
     featured: true,
+    walkthrough: '/cecl/',
   },
   {
     name: 'fraud-strategy-model',

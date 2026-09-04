@@ -120,6 +120,21 @@ a:hover {
   padding-block: 3.5rem 5rem;
 }
 
+body.wide .wrap {
+  width: min(72rem, calc(100% - 2.5rem));
+}
+
+.walkthrough {
+  display: block;
+  width: 100%;
+  height: min(52rem, 85vh);
+  margin-top: 0.9rem;
+  border: 0;
+  border-radius: var(--radius-outer);
+  box-shadow: var(--shadow-border);
+  background: oklch(0.93 0.01 100);
+}
+
 .site-header {
   display: flex;
   align-items: center;

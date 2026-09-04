@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CECL Reserve Model — Pipeline Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEEDE4;
+    --paper-raised:#F7F6F0;
+    --ink:#182530;
+    --ink-soft:#54606B;
+    --line:#C9C6B8;
+    --rule:#B8B4A4;
+    --amber:#9C5A26;
+    --amber-soft:#C98A54;
+    --teal:#2C6B60;
+    --teal-soft:#5C978C;
+    --node-bg:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    line-height:1.55;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:56px 28px 100px;}
+  h1{
+    font-family:'IBM Plex Serif',serif;
+    font-weight:600;
+    font-size:clamp(28px,4vw,40px);
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .sub{color:var(--ink-soft);font-size:16px;margin:0 0 44px;max-width:64ch;}
+  section{margin-bottom:64px;}
+  .section-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--amber);
+    margin:0 0 10px;
+    display:flex;align-items:baseline;gap:10px;
+  }
+  .section-label .rule{flex:1;height:1px;background:var(--rule);}
+  h2{
+    font-family:'IBM Plex Serif',serif;
+    font-weight:600;
+    font-size:24px;
+    margin:0 0 18px;
+  }
+
+  /* ---------- Intro card ---------- */
+  .script-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:32px 36px;
+    max-width:78ch;
+  }
+  .script-card p{
+    font-size:16.5px;
+    max-width:72ch;
+    margin:0 0 18px;
+  }
+  .script-card p:last-child{margin-bottom:0;}
+  .script-card code{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.92em;
+    background:rgba(24,37,48,.06);
+    padding:1px 5px;
+    border-radius:2px;
+  }
+
+  /* ---------- Diagram section ---------- */
+  .diagram-shell{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:20px 20px 8px;
+  }
+  .diagram-controls{
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:14px;
+    padding:0 8px 16px;
+  }
+  .legend{display:flex;gap:22px;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .legend i{width:20px;height:0;border-top:2.5px solid var(--teal);display:inline-block;}
+  .legend i.dashed{border-top:2.5px dashed var(--amber-soft);}
+  .toggle{
+    display:flex;align-items:center;gap:10px;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+  }
+  .toggle button{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    border:1px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    padding:7px 14px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .toggle button.active{background:var(--ink);color:var(--paper-raised);}
+  .diagram-scroll{overflow-x:auto;}
+  .diagram-canvas{position:relative;width:1200px;height:1040px;margin:0 auto;}
+  svg.edges{position:absolute;top:0;left:0;width:1200px;height:1040px;pointer-events:none;}
+  .node{
+    position:absolute;
+    background:var(--node-bg);
+    border:1.5px solid var(--ink);
+    border-radius:2px;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;
+    padding:8px 12px;
+    font-size:13.5px;
+    font-weight:500;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    line-height:1.3;
+  }
+  .node .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--amber);
+    position:absolute;top:6px;left:9px;
+  }
+  .node:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(24,37,48,.12);}
+  .node.selected{border-color:var(--amber);box-shadow:0 0 0 2px rgba(156,90,38,.18);}
+  .node.identity{border-width:2px;font-weight:600;}
+  .node .lbl{padding-top:6px;}
+
+  .detail-panel{
+    margin-top:18px;
+    border-top:1px solid var(--line);
+    padding:20px 8px 4px;
+    min-height:74px;
+  }
+  .detail-panel .ph{color:var(--ink-soft);font-size:14px;font-style:italic;}
+  .detail-panel .dk{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:var(--amber);margin-bottom:6px;
+  }
+  .detail-panel .d1{font-size:16px;max-width:70ch;}
+  .detail-panel .d2{font-size:15.5px;max-width:70ch;}
+  .detail-panel .d2 .step{margin:4px 0;}
+  .detail-panel .arrow-sep{color:var(--teal);font-weight:600;padding:0 4px;}
+
+  /* ---------- Reference section ---------- */
+  .ref-phase{margin-bottom:34px;}
+  .ref-phase h3{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:500;
+    font-size:13.5px;
+    color:var(--amber);
+    margin:0 0 4px;
+  }
+  .ref-phase .phase-when{color:var(--ink-soft);font-size:14px;margin:0 0 14px;}
+  .ref-item{
+    display:grid;grid-template-columns:230px 1fr;gap:18px;
+    padding:13px 0;border-top:1px solid var(--line);
+    max-width:96ch;
+  }
+  .ref-item:last-child{border-bottom:1px solid var(--line);}
+  .ref-item .k{font-weight:600;font-size:14.5px;}
+  .ref-item .v{font-size:14.5px;color:var(--ink);}
+  .ref-item .v .kw{color:var(--amber);font-weight:500;}
+
+  @media (max-width:720px){
+    .ref-item{grid-template-columns:1fr;gap:4px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>CECL Reserve Model — Pipeline Walkthrough</h1>
+  <p class="sub">credit-risk-cecl-model · synthetic data throughout · click any stage below for detail.</p>
+
+  <section>
+    <div class="section-label">the identity<span class="rule"></span></div>
+    <h2>What LGD × Σ<sub>T</sub> S<sub>T</sub>·PD<sub>T</sub>·EAD<sub>T</sub> requires</h2>
+    <div class="script-card">
+      <p>This repo assembles a first-principles CECL reserve — PD as a discrete-time hazard, survival as a competing-risk product, EAD as a rate, LGD from a marginal recovery curve — into one identity everything else has to stay consistent with.</p>
+      <p>It chooses logistic/hazard regression over a black-box ranker on purpose: a number that gets multiplied into a dollar reserve has to be a probability a reviewer can defend, not just a score that ranks well. The sibling <code>fraud-strategy-model</code> repo makes the opposite choice, for the same reason — different tail, different requirement.</p>
+      <p>Twelve stages below, synthetic panel to reserve waterfall. Toggle between the one-line summary and the two-step build order; click a box either way.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">the pipeline<span class="rule"></span></div>
+    <h2>Twelve stages, one identity</h2>
+    <div class="diagram-shell">
+      <div class="diagram-controls">
+        <div class="legend">
+          <span><i></i> primary sequence</span>
+          <span><i class="dashed"></i> supporting input</span>
+        </div>
+        <div class="toggle">
+          <span>Click a box to see:</span>
+          <button id="btn1" class="active">1 · one-line summary</button>
+          <button id="btn2">2 · subtasks a → b</button>
+        </div>
+      </div>
+      <div class="diagram-scroll">
+        <div class="diagram-canvas" id="canvas">
+          <svg class="edges" id="edgeSvg">
+            <defs>
+              <marker id="arrowSolid" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#2C6B60"/>
+              </marker>
+              <marker id="arrowDash" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#C98A54"/>
+              </marker>
+            </defs>
+          </svg>
+          <!-- nodes injected by JS -->
+        </div>
+      </div>
+      <div class="detail-panel" id="detailPanel">
+        <div class="ph">Click any box above to see its detail here.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">reference<span class="rule"></span></div>
+    <h2>Every stage, in build order</h2>
+
+    <div class="ref-phase">
+      <h3>Phase C0 — data foundation</h3>
+      <p class="phase-when">Everything downstream depends on this panel being right — competing-risk structure has to hold by construction, not by assumption.</p>
+      <div class="ref-item"><div class="k">Loan-month panel</div><div class="v">One row per loan per month-on-book — <span class="kw">FICO</span>, <span class="kw">utilization</span>, vintage, and a time-varying <span class="kw">macro covariate</span>, generated with documented true hazard rates so the fit can be checked against a known answer.</div></div>
+      <div class="ref-item"><div class="k">Competing exits</div><div class="v"><span class="kw">Default</span>, <span class="kw">prepay</span>, and <span class="kw">attrition</span> as three mutually-exclusive flags per row — never more than one true per loan-month, by construction.</div></div>
+    </div>
+
+    <div class="ref-phase">
+      <h3>Phase C1 — survival &amp; PD</h3>
+      <p class="phase-when">The hazard has to earn its keep against the simplest possible baseline before it earns any covariates.</p>
+      <div class="ref-item"><div class="k">Kaplan-Meier baseline</div><div class="v">Covariate-free <span class="kw">life-table hazard</span> by months-on-book × segment — the number a covariate-laden hazard model must reproduce when every covariate is switched off.</div></div>
+      <div class="ref-item"><div class="k">Discrete-time hazard</div><div class="v">Bernoulli rows, one per account-month, fit via <span class="kw">IRLS</span> with horizon- and segment-varying coefficients — canonical-link logistic regression, not a black-box classifier.</div></div>
+      <div class="ref-item"><div class="k">Competing-risk survival</div><div class="v"><span class="kw">S_T</span> as a product across all three exit hazards — dropping prepayment collapses this into a single-decrement model that overstates EL on exactly the fast-payoff, high-FICO segments.</div></div>
+    </div>
+
+    <div class="ref-phase">
+      <h3>Phase C2 — loss components &amp; assembly</h3>
+      <p class="phase-when">EAD and LGD are computed independently, then everything converges in the one file everything else has to match.</p>
+      <div class="ref-item"><div class="k">EAD as a rate</div><div class="v">Exposure over current balance, strictly bounded — never a dollar figure. A function that returns dollars for EAD is treated as a <span class="kw">bug</span>, not a variant.</div></div>
+      <div class="ref-item"><div class="k">LGD recovery curve</div><div class="v"><span class="kw">Marginal</span>, post-charge-off recoveries, discounted at an effective rate and net of collection costs, tail-extrapolated for cohorts that haven't finished recovering.</div></div>
+      <div class="ref-item"><div class="k">Risk-factor clustering</div><div class="v"><span class="kw">Hierarchical clustering</span> on prescreened candidates, one representative feature kept per cluster — the dendrogram is the audit trail for why a feature was dropped.</div></div>
+      <div class="ref-item"><div class="k">The identity</div><div class="v">LGD × Σ<sub>T</sub> S_T·PD_T·EAD_T, assembled per scenario. Every other file's output has to be consistent with what <span class="kw">identity.py</span> expects.</div></div>
+    </div>
+
+    <div class="ref-phase">
+      <h3>Phase C3 — scenario &amp; reserve</h3>
+      <p class="phase-when">The reserve isn't one number — it's three scenarios and a documented weighting.</p>
+      <div class="ref-item"><div class="k">Macro paths</div><div class="v"><span class="kw">Baseline</span>, <span class="kw">downside</span>, and <span class="kw">stagflation</span>, each reverting beyond the reasonable-and-supportable window — used twice: once as a hazard covariate, once as the scenario axis for weighting.</div></div>
+      <div class="ref-item"><div class="k">Reserve waterfall</div><div class="v">Baseline EL → downside/stagflation deltas → weighted reserve, charted scenario by scenario — never collapsed straight to one blended number with no bridge shown.</div></div>
+    </div>
+
+    <div class="ref-phase">
+      <h3>Phase C4 — documentation &amp; validation</h3>
+      <p class="phase-when">What's tested is what's claimed — nothing in the README that isn't backed by a green check here.</p>
+      <div class="ref-item"><div class="k">METHODOLOGY.md</div><div class="v">The <span class="kw">T11 derivation</span> in full — Bernoulli log-loss, canonical logit link, <span class="kw">IRLS</span> as re-weighted least squares, and the proper-scoring-rule argument for why log-loss is the right objective for a probability that feeds a dollar reserve.</div></div>
+      <div class="ref-item"><div class="k">Workbook bridge</div><div class="v">The unit-economics workbook, genericized and reconnected to this repo's identity output — breakeven CAC and contribution margin take the CECL rate from <span class="kw">identity.py</span>, not a second loss model.</div></div>
+      <div class="ref-item"><div class="k">Test suite</div><div class="v">Three tests, three claims: <span class="kw">competing-risk mechanics hold</span>, <span class="kw">EAD is always a rate</span>, and <span class="kw">scenario ordering is monotonic</span>. CI fails the build if any one breaks.</div></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const nodes = [
+  {id:'n1', num:1, x:460,y:20,w:280,h:68, label:'Synthetic Loan-Panel Generation',
+   l1:'Build a loan-month panel with FICO, utilization, vintage, and a macro path, with three mutually-exclusive exit flags per row so competing-risk survival holds by construction.',
+   l2:['Generate one row per loan per month-on-book with FICO / utilization / macro state','Assign at most one exit flag — default, prepay, or attrition — per row, with documented true generating rates']},
+  {id:'n2', num:2, x:90,y:150,w:230,h:72, label:'Kaplan-Meier Baseline Survival',
+   l1:'Life-table hazard by months-on-book × segment — the covariate-free skeleton every later hazard fit has to reproduce exactly.',
+   l2:['Compute at-risk / defaults / prepays / attritions per MOB × segment bucket','Derive the KM life-table hazard and cumulative survival curve']},
+  {id:'n3', num:3, x:485,y:150,w:230,h:72, label:'Hierarchical Clustering — Risk Factors',
+   l1:'Prescreen candidate risk factors, cluster them, and keep one representative feature per cluster before anything touches the hazard model.',
+   l2:['Prescreen candidates by information value / stability','Cluster, cut the dendrogram, and document the resulting cut-points']},
+  {id:'n4', num:4, x:880,y:150,w:230,h:72, label:'Macro Scenario Overlay',
+   l1:'Baseline, downside, and stagflation macro paths — one becomes a hazard covariate now, all three get reused for scenario weighting later.',
+   l2:['Construct baseline / downside / stagflation paths with reversion','Feed the current-period path into the hazard as a covariate']},
+  {id:'n5', num:5, x:460,y:290,w:280,h:72, label:'Discrete-Time Hazard (PD)',
+   l1:'Reshape the panel into account-month Bernoulli rows and fit a logistic hazard via IRLS — segment- and horizon-varying, zero-covariate case must equal KM.',
+   l2:['Reshape to account-month rows; fit horizon/segment-varying logit hazard via IRLS','Assert the zero-covariate fitted hazard reproduces the KM curve exactly']},
+  {id:'n6', num:6, x:460,y:412,w:280,h:68, label:'Competing-Risk Survival (S_T)',
+   l1:'Combine default, prepay, and attrition hazards into a single competing-risk survival product — dropping prepay would overstate EL on prime.',
+   l2:['Assemble the competing-risk survival product from all three hazards','Verify S_T × PD_T never exceeds 1 and the CIF stays proper']},
+  {id:'n7', num:7, x:120,y:534,w:230,h:68, label:'EAD Rate Model',
+   l1:'Exposure at default as a rate — exposure over current balance — never a dollar figure.',
+   l2:['Regress exposure/current-balance on utilization, status, payment-to-balance ratio','Bound the output strictly as a rate; a dollar return is treated as a bug']},
+  {id:'n8', num:8, x:850,y:534,w:230,h:68, label:'LGD Recovery Curve',
+   l1:'Marginal recovery curve post-charge-off, discounted and net of collection costs, tail-extrapolated for incomplete cohorts.',
+   l2:['Build the marginal recovery curve from post-charge-off cashflows','Discount at an effective rate, net collection costs, extrapolate the tail']},
+  {id:'n9', num:9, x:420,y:656,w:360,h:76, label:'CECL Identity Assembly', identity:true,
+   l1:'Everything converges here: LGD × Σ S_T·PD_T·EAD_T, computed per scenario. Every other file has to stay consistent with this one.',
+   l2:['Assemble the identity per scenario from survival, PD, EAD, and LGD','Unit-test the assembly: downside EL must exceed baseline EL']},
+  {id:'n10', num:10, x:460,y:782,w:280,h:72, label:'Reserve Waterfall & Scenario Weighting',
+   l1:'Blend baseline / downside / stagflation into one weighted reserve and show the bridge, scenario by scenario.',
+   l2:['Weight the per-scenario EL rates into a single reserve number','Chart the waterfall — baseline → each scenario → weighted result']},
+  {id:'n11', num:11, x:120,y:912,w:290,h:76, label:'Validation & Governance',
+   l1:'The tests are the claim — competing-risk mechanics, EAD-is-a-rate, and identity assembly all have to hold before anything ships.',
+   l2:['Run test_survival_identity, test_ead_is_rate, test_identity_assembly','CI blocks merges if any one of the three fails']},
+  {id:'n12', num:12, x:790,y:912,w:290,h:76, label:'METHODOLOGY.md & Workbook Bridge',
+   l1:'The T11 derivation written out in full, plus the genericized unit-economics workbook bridging the reserve number to business impact.',
+   l2:['Write the Bernoulli log-loss → canonical link → IRLS → proper-scoring-rule derivation in full','Bridge the reserve rate into the genericized breakeven-CAC / contribution-margin workbook']},
+];
+
+const solidEdges = [
+  [600,88, 205,150], [600,88, 600,150], [600,88, 995,150],
+  [205,222, 600,290],
+  [520,88, 235,534], [680,88, 965,534],
+  [600,362, 600,412],
+  [600,480, 600,656],
+  [235,602, 600,656], [965,602, 600,656],
+  [600,732, 600,782],
+];
+const dashedEdges = [
+  [600,222, 600,290],
+  [995,222, 600,290],
+  [995,222, 600,782],
+  [600,480, 265,912],
+  [600,732, 265,912],
+  [600,854, 935,912],
+];
+
+const canvas = document.getElementById('canvas');
+const svg = document.getElementById('edgeSvg');
+
+function drawEdges(list, dashed){
+  list.forEach(([x1,y1,x2,y2])=>{
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.setAttribute('stroke', dashed ? '#C98A54' : '#2C6B60');
+    line.setAttribute('stroke-width', dashed ? 1.6 : 2.2);
+    line.setAttribute('opacity', dashed ? 0.55 : 0.9);
+    if(dashed) line.setAttribute('stroke-dasharray','5,4');
+    line.setAttribute('marker-end', dashed ? 'url(#arrowDash)' : 'url(#arrowSolid)');
+    svg.appendChild(line);
+  });
+}
+drawEdges(solidEdges,false);
+drawEdges(dashedEdges,true);
+
+let mode = 1;
+let selected = null;
+
+nodes.forEach(n=>{
+  const div = document.createElement('div');
+  div.className = 'node' + (n.identity ? ' identity' : '');
+  div.style.left = n.x+'px'; div.style.top = n.y+'px';
+  div.style.width = n.w+'px'; div.style.height = n.h+'px';
+  div.innerHTML = '<span class="num">'+n.num+'</span><span class="lbl">'+n.label+'</span>';
+  div.addEventListener('click', ()=>selectNode(n, div));
+  canvas.appendChild(div);
+  n._el = div;
+});
+
+function selectNode(n, div){
+  nodes.forEach(x=>x._el.classList.remove('selected'));
+  div.classList.add('selected');
+  selected = n;
+  renderDetail();
+}
+
+function renderDetail(){
+  const panel = document.getElementById('detailPanel');
+  if(!selected){ panel.innerHTML = '<div class="ph">Click any box above to see its detail here.</div>'; return; }
+  if(mode===1){
+    panel.innerHTML = '<div class="dk">'+selected.num+' · '+selected.label+' — one-line summary</div><div class="d1">'+selected.l1+'</div>';
+  } else {
+    panel.innerHTML = '<div class="dk">'+selected.num+' · '+selected.label+' — subtasks</div>'+
+      '<div class="d2"><div class="step">a) '+selected.l2[0]+'</div>'+
+      '<div class="step"><span class="arrow-sep">\u2193</span> b) '+selected.l2[1]+'</div></div>';
+  }
+}
+
+document.getElementById('btn1').addEventListener('click', ()=>{
+  mode=1; document.getElementById('btn1').classList.add('active'); document.getElementById('btn2').classList.remove('active'); renderDetail();
+});
+document.getElementById('btn2').addEventListener('click', ()=>{
+  mode=2; document.getElementById('btn2').classList.add('active'); document.getElementById('btn1').classList.remove('active'); renderDetail();
+});
+</script>
+</body>
+</html>

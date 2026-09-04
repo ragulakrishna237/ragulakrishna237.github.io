@@ -7,9 +7,10 @@ interface Props {
   title: string;
   description: string;
   jsonLd?: Record<string, unknown>;
+  wide?: boolean;
 }
 
-const { title, description, jsonLd } = Astro.props;
+const { title, description, jsonLd, wide = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -17,7 +18,7 @@ const { title, description, jsonLd } = Astro.props;
   <head>
     <SiteHead title={title} description={description} jsonLd={jsonLd} />
   </head>
-  <body>
+  <body class={wide ? 'wide' : undefined}>
     <div class="wrap">
       <SiteNav />
       <main id="content" tabindex="-1">

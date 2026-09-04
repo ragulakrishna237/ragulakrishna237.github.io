@@ -24,6 +24,7 @@ const title = `${project.name} — ${person.name}`;
   title={title}
   description={project.scope}
   jsonLd={graphJsonLd(pageUrl, title, [softwareSourceCodeJsonLd(project)])}
+  wide={Boolean(project.walkthrough)}
 >
   <article>
     <header class="enter">
@@ -36,6 +37,21 @@ const title = `${project.name} — ${person.name}`;
         <h2>What I built</h2>
         <p>{project.detail}</p>
       </section>
+
+      {project.walkthrough && (
+        <section class="enter">
+          <h2>Pipeline walkthrough</h2>
+          <p>
+            <a href={project.walkthrough}>Open the walkthrough as its own page</a>
+          </p>
+          <iframe
+            class="walkthrough"
+            src={project.walkthrough}
+            title="CECL reserve model pipeline walkthrough"
+            loading="lazy"
+          />
+        </section>
+      )}
 
       <section class="enter">
         <h2>Source</h2>
