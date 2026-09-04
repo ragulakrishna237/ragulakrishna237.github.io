@@ -5,9 +5,9 @@ export const siteUrl = 'https://ragulakrishna237.github.io';
 export const person = {
   name: 'Saikrishna Ragula',
   alternateName: 'ragulakrishna237',
-  jobTitle: 'Python engineer — trading systems, credit risk, fraud models, and data platforms',
+  jobTitle: 'Python and data engineer — pipelines, backend systems, and data platforms',
   description:
-    'I build production-shaped Python systems: strategy runtimes, market-data and order services, CECL and fraud decisioning, ELT warehouses, Delta Lake pipelines, and streaming data paths.',
+    'I am a Python and data engineer with 6+ years building production pipelines and backend systems — Databricks, Snowflake, Kafka, Airflow, AWS — most recently at Goldman Sachs. Outside of work I build distributed systems from scratch, including an independent three-repo trading-systems stack.',
   image: `${siteUrl}/profile.jpg`,
   email: '',
   location: '',
@@ -16,41 +16,42 @@ export const person = {
 };
 
 export const headline =
-  'I build trading infrastructure, credit and fraud models, and data platforms in Python.';
+  'I am a Python and data engineer with 6+ years building production pipelines and backend systems.';
 
 export const summary =
-  'I design Python systems where researchers write strategy logic and the platform owns lifecycle, market data, execution, risk, sandboxing, and telemetry. My public trading stack is a strategy IoC container, a FastAPI market-data vendor, and an order-management service with kill switches and audit trails. Around that stack I built a first-principles CECL reserve, a leakage-safe fraud strategy with dollar decisioning, Airflow and dbt ELT, a local PySpark Delta Lake, a Kafka streaming path, storage-engine labs, an Apollo research client, and a FastAPI CI/CD image published to GHCR.';
+  'I am a Python and data engineer with 6+ years building production pipelines and backend systems — Databricks, Snowflake, Kafka, Airflow, AWS — most recently at Goldman Sachs. Outside of work, I design and build distributed systems from scratch to go deeper on engineering fundamentals: a strategy runtime, an order management service, and a market-data platform, each built with real testing, observability, and failure-handling in mind.';
+
+export const tradingStackIntro =
+  'A three-repo trading-systems stack I designed and built independently — not as part of a job — to deepen my understanding of distributed systems, state correctness, and production-grade Python at a level day-to-day data engineering work does not always require.';
 
 export const seeking = [
-  'Quant Developer / Quantitative Engineer',
-  'Trading Systems / Platform Engineer',
-  'Market Data Engineer',
-  'Python Backend Engineer (markets, fintech)',
-  'Credit Risk / Fraud Model Developer',
-  'Data Scientist',
-  'Data Engineer (streaming, warehouses, finance)',
+  'Python / Backend Engineer',
+  'Data Engineer',
+  'Data Scientist (credit risk / fraud)',
+  'Quantitative / Risk Analyst',
+  'Python Engineer — trading or fintech systems',
 ];
 
 export const knowsAbout = [
   'Python',
-  'Quantitative trading systems',
-  'Market data',
-  'CECL / expected credit loss',
-  'Fraud decisioning',
-  'FastAPI',
-  'WebSockets',
+  'Databricks',
+  'Snowflake',
   'Apache Kafka',
-  'PostgreSQL',
   'Apache Airflow',
+  'AWS',
   'dbt',
   'Delta Lake',
   'PySpark',
+  'PostgreSQL',
+  'FastAPI',
+  'CECL / expected credit loss',
+  'Fraud decisioning',
   'XGBoost',
   'Docker',
-  'Prometheus',
   'GitHub Actions',
+  'WebSockets',
+  'Prometheus',
   'Inversion of Control',
-  'Risk controls',
   'Order management',
   'Telemetry',
 ];
@@ -244,22 +245,22 @@ export const faqs = [
   {
     question: 'Who is Saikrishna Ragula?',
     answer:
-      'I am Saikrishna Ragula, a Python engineer. I build trading infrastructure — strategy runtimes, market-data services, and order-management systems — and I also ship credit-risk, fraud, warehouse, Delta Lake, and streaming work in public repos. Researchers write strategy logic; my platform owns lifecycle, execution, risk, sandboxing, and telemetry.',
+      'I am Saikrishna Ragula, a Python and data engineer. I have 6+ years building production pipelines and backend systems — Databricks, Snowflake, Kafka, Airflow, AWS — most recently at Goldman Sachs. Outside of work I design distributed systems from scratch: a strategy runtime, an order-management service, and a market-data platform, each with testing, observability, and failure-handling. I also ship credit-risk, fraud, warehouse, and Delta Lake work in public repos.',
   },
   {
     question: 'What jobs is Saikrishna Ragula looking for?',
     answer:
-      'I am looking for Quant Developer, Quantitative Engineer, Trading Systems / Platform Engineer, Market Data Engineer, Python backend roles in markets or fintech, Credit Risk / Fraud model work, Data Scientist roles, and Data Engineer roles focused on streaming, warehouses, and finance data.',
+      'I am looking for Python / Backend Engineer roles, Data Engineer roles, Data Scientist roles in credit risk or fraud, Quantitative / Risk Analyst roles, and — when the domain fit is right — Python engineer roles in trading or fintech systems.',
   },
   {
     question: 'What has Saikrishna Ragula built?',
     answer:
-      'I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor. I also built credit-risk-cecl-model as a first-principles CECL reserve, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, streaming-service as a Kafka producer/consumer path, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
+      'Independently I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor. I also built credit-risk-cecl-model as a first-principles CECL reserve, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, streaming-service as a Kafka producer/consumer path, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
   },
   {
     question: 'What stack does Saikrishna Ragula use?',
     answer:
-      'I work in Python with FastAPI, WebSockets, Apache Kafka, PostgreSQL, Docker, Prometheus, Apache Airflow, dbt, PySpark, Delta Lake, and XGBoost. I design inversion-of-control runtimes, order-state machines, CECL identities, leakage-safe features, risk controls, telemetry, and CI/CD that publishes images to GHCR.',
+      'I work in Python with Databricks, Snowflake, Apache Kafka, Apache Airflow, AWS, FastAPI, PostgreSQL, Docker, dbt, PySpark, Delta Lake, and XGBoost. In public repos I also design inversion-of-control runtimes, order-state machines, CECL identities, leakage-safe features, and CI/CD that publishes images to GHCR.',
   },
   {
     question: "Where is Saikrishna Ragula's canonical profile?",
@@ -274,11 +275,16 @@ export const pages = [
     path: '/work/',
     label: 'Work',
     description:
-      'My public work in trading systems, credit and fraud models, warehouses, streaming, and Python infrastructure.',
+      'My public work in data platforms, credit risk, fraud strategy, and an independent three-repo trading-systems stack.',
   },
 ] as const;
 
 export const projectHref = (project: Project) => `/work/${project.slug}/`;
+
+export const isTradingStack = (project: Project) =>
+  project.slug === 'quant-platform' ||
+  project.slug === 'trading-platform' ||
+  project.slug === 'market-data-service';
 
 export const identityLinks = () => {
   const links: { label: string; href: string; rel: string; icon: 'github' | 'linkedin' }[] = [

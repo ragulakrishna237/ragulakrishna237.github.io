@@ -8,10 +8,14 @@ import {
   softwareSourceCodeJsonLd,
   projectHref,
   siteUrl,
+  tradingStackIntro,
+  isTradingStack,
 } from '../../data/site';
 
 const meta = pages[1];
 const title = `${person.name} — Work`;
+const tradingProjects = projects.filter(isTradingStack);
+const otherProjects = projects.filter((project) => !isTradingStack(project));
 ---
 
 <Layout
@@ -25,18 +29,35 @@ const title = `${person.name} — Work`;
       <p class="lede">{meta.description}</p>
     </header>
 
-    <section class="enter">
-      <h2>My public repositories</h2>
-      <div class="cards">
-        {projects.map((project) => (
-          <a class="card press" href={projectHref(project)}>
-            <h3>{project.name}</h3>
-            <p>{project.scope}</p>
-            <p>{project.detail}</p>
-            <span class="card-meta">Read the write-up</span>
-          </a>
-        ))}
-      </div>
-    </section>
+    <div class="stack">
+      <section class="enter">
+        <h2>Independent trading-systems stack</h2>
+        <p class="section-note">{tradingStackIntro}</p>
+        <div class="cards">
+          {tradingProjects.map((project) => (
+            <a class="card press" href={projectHref(project)}>
+              <h3>{project.name}</h3>
+              <p>{project.scope}</p>
+              <p>{project.detail}</p>
+              <span class="card-meta">Read the write-up</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="enter">
+        <h2>Other public work</h2>
+        <div class="cards">
+          {otherProjects.map((project) => (
+            <a class="card press" href={projectHref(project)}>
+              <h3>{project.name}</h3>
+              <p>{project.scope}</p>
+              <p>{project.detail}</p>
+              <span class="card-meta">Read the write-up</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
   </article>
 </Layout>

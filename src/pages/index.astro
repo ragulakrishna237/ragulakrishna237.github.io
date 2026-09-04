@@ -12,9 +12,13 @@ import {
   faqJsonLd,
   projectHref,
   siteUrl,
+  tradingStackIntro,
+  isTradingStack,
 } from '../data/site';
 
 const featured = projects.filter((project) => project.featured);
+const tradingFeatured = featured.filter(isTradingStack);
+const otherFeatured = featured.filter((project) => !isTradingStack(project));
 const title = `${person.name} — ${person.jobTitle}`;
 ---
 
@@ -24,7 +28,7 @@ const title = `${person.name} — ${person.jobTitle}`;
 
     <div class="stack">
       <section class="enter">
-        <h2>Roles I want</h2>
+        <h2>Roles I am open to</h2>
         <ul class="list">
           {seeking.map((role) => <li>{role}</li>)}
         </ul>
@@ -32,8 +36,9 @@ const title = `${person.name} — ${person.jobTitle}`;
 
       <section class="enter">
         <h2>Selected work</h2>
+        <p class="section-note">{tradingStackIntro}</p>
         <div class="cards">
-          {featured.map((project) => (
+          {tradingFeatured.map((project) => (
             <a class="card press" href={projectHref(project)}>
               <h3>{project.name}</h3>
               <p>{project.scope}</p>
@@ -41,6 +46,17 @@ const title = `${person.name} — ${person.jobTitle}`;
             </a>
           ))}
         </div>
+        {otherFeatured.length > 0 && (
+          <div class="cards">
+            {otherFeatured.map((project) => (
+              <a class="card press" href={projectHref(project)}>
+                <h3>{project.name}</h3>
+                <p>{project.scope}</p>
+                <span class="card-meta">Read the write-up</span>
+              </a>
+            ))}
+          </div>
+        )}
         <p><a href="/work/">All of my public work</a></p>
       </section>
 

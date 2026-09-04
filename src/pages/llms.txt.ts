@@ -9,6 +9,7 @@ import {
   faqs,
   siteUrl,
   identityLinks,
+  tradingStackIntro,
   projectHref,
 } from '../data/site';
 
@@ -56,6 +57,8 @@ ${summary}
 ${roles}
 
 ## Selected work
+
+${tradingStackIntro}
 
 ${selected}
 

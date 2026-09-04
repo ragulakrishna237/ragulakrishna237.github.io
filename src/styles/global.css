@@ -233,6 +233,12 @@ p {
   color: var(--ink);
 }
 
+.section-note {
+  margin-top: 0.85rem;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
 .profile-card {
   padding: var(--pad-card);
   border-radius: calc(var(--radius-inner) + var(--pad-card));
