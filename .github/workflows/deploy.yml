@@ -46,7 +46,8 @@ jobs:
           test -f dist/index.html
           test -f dist/work/index.html
           test -f dist/llms.txt
-          test -f dist/sitemap.xml
+          test -f dist/sitemap-index.xml
+          test -f dist/sitemap-0.xml
           test -f dist/cecl/index.html
           grep -q "Saikrishna Ragula" dist/index.html
 

@@ -25,4 +25,4 @@ Allow: /
 User-agent: Claude-User
 Allow: /
 
-Sitemap: https://ragulakrishna237.github.io/sitemap.xml
+Sitemap: https://ragulakrishna237.github.io/sitemap-index.xml
