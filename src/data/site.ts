@@ -160,9 +160,9 @@ const catalog: Project[] = [
     name: 'credit-risk-cecl-model',
     slug: 'credit-risk-cecl-model',
     scope:
-      'I built a first-principles CECL reserve: discrete-time PD hazard, competing-risk survival, EAD as a rate, and LGD from a discounted recovery curve, assembled as LGD × Σ S_T · PD_T · EAD_T.',
+      'I built a first-principles CECL reserve: discrete-time PD hazard, competing-risk survival (default / prepay / attrition), EAD as a rate, LGD from a discounted recovery curve, and risk-factor clustering, assembled as LGD × Σ S_T · PD_T · EAD_T.',
     detail:
-      'I chose logistic / hazard regression over a black-box ranker so a dollar reserve stays a probability a reviewer can defend. Tests prove the survival identity, that EAD rejects a dollar vector, and that dropping prepay from survival overstates prime EL. All loan-month data are synthetic.',
+      'I chose logistic / hazard regression over a black-box ranker so a dollar reserve stays a probability a reviewer can defend. Tests prove the survival identity, that EAD rejects a dollar vector, that downside EL sits above baseline on the published synthetic draw, and that dropping prepay from survival overstates prime EL. All loan-month data are synthetic.',
     repo: 'https://github.com/ragulakrishna237/credit-risk-cecl-model',
     featured: true,
     walkthrough: '/cecl/',
@@ -181,9 +181,9 @@ const catalog: Project[] = [
     name: 'airflow-dbt-warehouse',
     slug: 'airflow-dbt-warehouse',
     scope:
-      'I built an Airflow-orchestrated ELT: extract, load raw orders, then dbt run and test against a star schema I can retarget across warehouses.',
+      'I built an Airflow-orchestrated ELT: extract, load raw orders, then dbt run and test against a star schema written once and swapped with --target across Postgres, Snowflake, and BigQuery.',
     detail:
-      'CI proves the Postgres target. Models are written once and swapped with --target. Re-running a day is safe: the generator is a function of seed and as_of_date, and the loader upserts dimensions then deletes and inserts facts for that order_date.',
+      'CI proves the Postgres target. Snowflake and BigQuery adapters are in the project; I do not claim those warehouses as executed here. Re-running a day is safe: the generator is a function of seed and as_of_date, and the loader upserts dimensions then deletes and inserts facts for that order_date.',
     repo: 'https://github.com/ragulakrishna237/airflow-dbt-warehouse',
     featured: false,
   },
@@ -255,7 +255,7 @@ export const faqs = [
   {
     question: 'What has Saikrishna Ragula built?',
     answer:
-      'Independently I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor. I also built credit-risk-cecl-model as a first-principles CECL reserve, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, streaming-service as a Kafka producer/consumer path, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
+      'Independently I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor. I also built credit-risk-cecl-model as a first-principles CECL reserve with competing-risk survival, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT with Postgres proven in CI, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, streaming-service as a Kafka producer/consumer path, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
   },
   {
     question: 'What stack does Saikrishna Ragula use?',

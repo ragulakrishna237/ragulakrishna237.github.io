@@ -1,34 +1,16 @@
 :root {
-  color-scheme: light;
-  --canvas: oklch(0.99 0 0);
-  --ink: oklch(0.22 0 0);
-  --muted: oklch(0.46 0 0);
-  --line: oklch(0 0 0 / 0.08);
+  color-scheme: dark;
+  --canvas: #000000;
+  --ink: #ffffff;
+  --muted: #d4d4d4;
+  --line: oklch(1 0 0 / 0.16);
   --radius-inner: 8px;
   --radius-outer: 16px;
   --pad-card: 16px;
-  --shadow-border:
-    0 0 0 1px oklch(0 0 0 / 0.06),
-    0 1px 2px -1px oklch(0 0 0 / 0.06),
-    0 2px 4px 0 oklch(0 0 0 / 0.04);
-  --shadow-border-hover:
-    0 0 0 1px oklch(0 0 0 / 0.08),
-    0 1px 2px -1px oklch(0 0 0 / 0.08),
-    0 2px 4px 0 oklch(0 0 0 / 0.06);
+  --shadow-border: 0 0 0 1px oklch(1 0 0 / 0.18);
+  --shadow-border-hover: 0 0 0 1px oklch(1 0 0 / 0.32);
   --ease: cubic-bezier(0.2, 0, 0, 1);
   --measure: 40rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --canvas: oklch(0.173 0 0);
-    --ink: oklch(0.97 0 0);
-    --muted: oklch(0.72 0 0);
-    --line: oklch(1 0 0 / 0.1);
-    --shadow-border: 0 0 0 1px oklch(1 0 0 / 0.08);
-    --shadow-border-hover: 0 0 0 1px oklch(1 0 0 / 0.13);
-  }
 }
 
 *,
@@ -64,30 +46,18 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
-  outline: 1px solid oklch(0 0 0 / 0.1);
+  outline: 1px solid oklch(1 0 0 / 0.16);
   outline-offset: -1px;
-}
-
-@media (prefers-color-scheme: dark) {
-  img {
-    outline-color: oklch(1 0 0 / 0.1);
-  }
 }
 
 a {
   color: var(--ink);
   text-underline-offset: 0.18em;
   text-decoration-thickness: 1px;
-  text-decoration-color: oklch(0 0 0 / 0.28);
+  text-decoration-color: oklch(1 0 0 / 0.4);
   transition-property: text-decoration-color, opacity;
   transition-duration: 150ms;
   transition-timing-function: var(--ease);
-}
-
-@media (prefers-color-scheme: dark) {
-  a {
-    text-decoration-color: oklch(1 0 0 / 0.32);
-  }
 }
 
 a:hover {
@@ -132,7 +102,7 @@ body.wide .wrap {
   border: 0;
   border-radius: var(--radius-outer);
   box-shadow: var(--shadow-border);
-  background: oklch(0.93 0.01 100);
+  background: #111111;
 }
 
 .site-header {
@@ -174,14 +144,8 @@ body.wide .wrap {
 }
 
 .nav a:hover {
-  background: oklch(0 0 0 / 0.04);
+  background: oklch(1 0 0 / 0.08);
   color: var(--ink);
-}
-
-@media (prefers-color-scheme: dark) {
-  .nav a:hover {
-    background: oklch(1 0 0 / 0.06);
-  }
 }
 
 .nav a[aria-current='page'] {
@@ -223,7 +187,7 @@ h3 {
 
 p {
   margin: 0.75rem 0 0;
-  color: var(--muted);
+  color: var(--ink);
   text-wrap: pretty;
 }
 
@@ -387,7 +351,7 @@ p {
 
 .faq dd {
   margin: 0.35rem 0 0;
-  color: var(--muted);
+  color: var(--ink);
   text-wrap: pretty;
 }
 
