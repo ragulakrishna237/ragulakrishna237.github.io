@@ -150,9 +150,9 @@ const catalog: Project[] = [
     name: 'market-data-service',
     slug: 'market-data-service',
     scope:
-      'I built a standalone FastAPI/WebSocket vendor: sequenced ticks, REST snapshots, ring-buffer replay, health checks, Prometheus metrics, and Docker.',
+      'I built a standalone FastAPI/WebSocket vendor: sequenced equity ticks, REST snapshots, ring-buffer replay, health checks, Prometheus metrics, and an additive fixed-income bus on /ws/fi.',
     detail:
-      'I kept it stateless so I can kill and restart it freely. It emits ticks with seq and ts_event, heartbeats when idle, snapshots by symbol, and replay from a per-symbol ring buffer. This is the external feed the rest of my stack does not control.',
+      'I kept it stateless so I can kill and restart it freely. Equity /ws/stream and snapshots stay as they were. The FI path publishes sequenced price/yield ticks from synthetic Treasuries, agency MBS, and rates instruments, with REST refdata and snapshots by instrument_id. Vendor ticks are not a Security Master; a consumer validates sequence and staleness then upserts.',
     repo: 'https://github.com/ragulakrishna237/market-data-service',
     featured: true,
   },
@@ -191,9 +191,9 @@ const catalog: Project[] = [
     name: 'databricks-delta-lake',
     slug: 'databricks-delta-lake',
     scope:
-      'I built a local PySpark + Delta bronze / silver / gold pipeline with append, MERGE, quarantine, and VERSION AS OF time travel.',
+      'I built a local PySpark + Delta bronze / silver / gold pipeline, then added fixed-income lakehouse demos: Auto Loader into Holding Master MERGE, cost observability, and Unity Catalog patterns.',
     detail:
-      'Bronze stays append-only. Silver dedupes on event_id and sends poison rows to quarantine instead of dropping them. Gold is daily order_count and amount_sum, not a copied warehouse star schema. Local tests run PySpark; the DLT file is workspace-only and is not claimed as executed here.',
+      'The original e-commerce path is unchanged: bronze is append-only, silver quarantines poison rows, gold is daily order_count and amount_sum, with MERGE and VERSION AS OF. The FI add-on lands hourly synthetic holdings JSON, MERGEs gold on account, instrument, and as_of_ts, and includes SCD2 Security Master plus bitemporal holdings SQL. Local tests run PySpark; workspace DLT and bundle deploy are not claimed as executed here.',
     repo: 'https://github.com/ragulakrishna237/databricks-delta-lake',
     featured: false,
   },
@@ -211,9 +211,9 @@ const catalog: Project[] = [
     name: 'streaming-service',
     slug: 'streaming-service',
     scope:
-      'I built a Kafka producer/consumer path with a Dockerized broker and a FastAPI UI so I can watch messages move in real time.',
+      'I built a Kafka produce/consume path with a Dockerized broker, then added fixed-income topics for Holding Master and Transaction Master events.',
     detail:
-      'I persist scraped source data, then stream it to a Kafka topic. Separate producer, consumer, and visualization processes make the pipeline inspectable — the same production-grade parameters (broker isolation, topic boundaries, consumer lag) I use in market-data ingestion.',
+      'The original orders topic is unchanged: customer-keyed partitions, at-least-once upsert on event_id, and a lag monitor. The FI add-on publishes fi.position.updates, fi.cashflow.events, and fi.prepayment.signals, keyed by account_id, and sinks synthetic holdings and transactions to SQLite. Payloads are synthetic; this is a local mechanics demo, not a throughput benchmark.',
     repo: 'https://github.com/ragulakrishna237/streaming-service-',
     featured: false,
   },
@@ -255,7 +255,7 @@ export const faqs = [
   {
     question: 'What has Saikrishna Ragula built?',
     answer:
-      'Independently I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor. I also built credit-risk-cecl-model as a first-principles CECL reserve with competing-risk survival, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT with Postgres proven in CI, databricks-delta-lake as bronze/silver/gold with MERGE and time travel, streaming-service as a Kafka producer/consumer path, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
+      'Independently I built quant_platform as an inversion-of-control strategy runtime, trading-platform as an OMS with kill switches and audit trails, and market-data-service as a FastAPI/WebSocket tick vendor with an additive fixed-income bus. I also built credit-risk-cecl-model as a first-principles CECL reserve with competing-risk survival, fraud-strategy-model as leakage-safe dollar decisioning, airflow-dbt-warehouse as retargetable ELT with Postgres proven in CI, databricks-delta-lake as bronze/silver/gold plus FI Auto Loader and Holding Master MERGE, streaming-service as Kafka orders plus FI holding and transaction topics, storage-engine as Postgres labs, apollo-data-project as an Apollo research pull, and ci-cd-pipeline-demo as FastAPI CI/CD that publishes to GHCR.',
   },
   {
     question: 'What stack does Saikrishna Ragula use?',
@@ -275,7 +275,7 @@ export const pages = [
     path: '/work/',
     label: 'Work',
     description:
-      'My public work in data platforms, credit risk, fraud strategy, and an independent three-repo trading-systems stack.',
+      'My public work in data platforms, credit risk, fraud strategy, fixed-income lakehouse and streaming add-ons, and an independent three-repo trading-systems stack.',
   },
 ] as const;
 
